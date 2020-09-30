@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div style="height: 100vh">
+        <p style="font-max-size: 72pt">ТАДАМ ЕПТА БЛЯ</p>
+    {% for el in context %}
+        <h3>{{ el }}</h3>
+    {% endfor %}
+    </div>
+{% endblock %}
