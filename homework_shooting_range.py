@@ -103,6 +103,7 @@ def display_winner(data):
     print("the winner in the pistol section is:", sort_pistol[[1]].idxmax().values)
     print("the winner in the shotgun section is:", sort_shotgun[[2]].idxmax().values)
     print("the winner with the highest absolute score is:", sort_by_sum[['sum']].idxmax().values)
+    return [sort_bow, sort_pistol, sort_shotgun, sort_by_sum]
 
 
 if __name__ == "__main__":
