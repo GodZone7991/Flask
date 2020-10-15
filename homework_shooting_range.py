@@ -91,19 +91,32 @@ def competition():
 
 def display_winner(data):
     df = pd.DataFrame(data)
-    df_t = df.T
+    df_n = df.rename(index={0: "bow", 1: "pistol", 2: "shotgun"})
+    df_t = df_n.T
     df_t["sum"] = df_t.sum(axis=1)
 
-    sort_by_sum = df_t.sort_values(by='sum', ascending=False)
-    sort_bow = df_t.sort_values(by=[0], ascending=False)
-    sort_pistol = df_t.sort_values(by=[1], ascending=False)
-    sort_shotgun = df_t.sort_values(by=[2], ascending=False)
 
-    print("the winner in the bow section is:", sort_bow[[0]].idxmax().values)
-    print("the winner in the pistol section is:", sort_pistol[[1]].idxmax().values)
-    print("the winner in the shotgun section is:", sort_shotgun[[2]].idxmax().values)
-    print("the winner with the highest absolute score is:", sort_by_sum[['sum']].idxmax().values)
-    return [sort_bow, sort_pistol, sort_shotgun, sort_by_sum]
+    sort_by_sum = df_t.sort_values(by='sum', ascending=False)
+    sort_bow = df_t.sort_values(by="bow", ascending=False)
+    sort_pistol = df_t.sort_values(by="pistol", ascending=False)
+    sort_shotgun = df_t.sort_values(by="shotgun", ascending=False)
+
+    winner_bow = sort_bow[["bow"]].idxmax().values[0]
+    winner_pistol = sort_pistol[["pistol"]].idxmax().values[0]
+    winner_shotgun = sort_shotgun[["shotgun"]].idxmax().values[0]
+    winner_sum = sort_by_sum[['sum']].idxmax().values[0]
+
+    winner_list = [winner_sum, winner_bow,winner_pistol,winner_shotgun,]
+
+
+    winner_list_f = []
+    for table in [sort_by_sum,sort_bow,sort_pistol, sort_shotgun]:
+        for winner in winner_list:
+            winner_list_f.append(table.rename(index={winner: winner + "is a winner"}))
+
+
+
+    return winner_list_f
 
 
 if __name__ == "__main__":
