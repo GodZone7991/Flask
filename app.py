@@ -2,6 +2,8 @@ from flask import Flask
 from flask import render_template
 import logic
 from homework_shooting_range import display_winner, competition
+import requests
+
 
 app = Flask(__name__)
 
@@ -10,10 +12,25 @@ response2 = "<script> alert( 'Привет, мир!' );</script>"
 response3 = "<div> <p> \"О дивный новый\" </p></div>"
 
 
+API_URL = 'http://ws.audioscrobbler.com/2.0/'
+API_KEY = "b6efafaeb5b8cf7b9b0daa2199034574"
 
 @app.route('/')
 def show_home():
-    return render_template('home.html', context=app.config)
+    headers = {
+        'user-agent': 'Psychomusic'
+    }
+
+    payload = {
+        'artist': 'Drake',
+        'api_key': API_KEY,
+        'method': 'artist.getsimilar',
+        'format': 'json'
+    }
+
+    r = requests.get(API_URL, params = payload, headers=headers)
+
+    return render_template('about.html', context=r.json())
 
 
 @app.route('/game')
