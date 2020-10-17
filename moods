@@ -1,0 +1,11 @@
+chill
+happy
+gloomy
+melancholic
+full of energy
+aggressive
+
+TODO:
+- telegram bot interface(look through API documentation)
+- event listener on telegram to upload
+- Heroku, deploy error code H14
