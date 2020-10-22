@@ -112,7 +112,7 @@ def display_winner(data):
     winner_list_f = []
     for i, table in enumerate([sort_by_sum,sort_bow,sort_pistol,sort_shotgun]):
 
-        winner_list_f.append(table.rename(index={winner_list[i]: winner_list[i] + "is a winner"}))
+        winner_list_f.append(table.rename(index={winner_list[i]: winner_list[i] + " is a winner"}))
 
 
 
