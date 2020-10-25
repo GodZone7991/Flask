@@ -1,0 +1,22 @@
+chill
+happy
+gloomy
+melancholic
+full of energy
+aggressive
+
+TODO:
+- telegram bot interface(look through API documentation)
+- event listener on telegram to upload
+- deployment automation: bash script, crontab
+cmds in ubunu:
+- fix postinstalation error
+
+#gunicorn --bind 0.0.0.0:8000 wsgi:app
+
+
+Database content:
+
+User ID; Music data; Moods; like/dislike;
+
+

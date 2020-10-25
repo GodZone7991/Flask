@@ -1,19 +1,10 @@
-from flask import Flask
-from flask import render_template
-import logic
-from homework_shooting_range import display_winner, competition
 import requests
+from flask import render_template
+from flask import current_app as app
+from config import API_KEY, API_URL
+from application.homework_shooting_range import display_winner, competition
 
-
-app = Flask(__name__)
-
-response1 = logic.foo()
 response2 = "<script> alert( 'Привет, мир!' );</script>"
-response3 = "<div> <p> \"О дивный новый\" </p></div>"
-
-
-API_URL = 'http://ws.audioscrobbler.com/2.0/'
-API_KEY = "b6efafaeb5b8cf7b9b0daa2199034574"
 
 @app.route('/')
 def show_home():
