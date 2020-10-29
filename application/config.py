@@ -1,15 +1,19 @@
+import private
+
+
 ENV = 'development'
 DEBUG = True
 TESTING = True
 
 
-SQLALCHEMY_DATABASE_URI = environ.get("SQLALCHEMY_DATABASE_URI")
+
+SQLALCHEMY_DATABASE_URI = private.SQLALCHEMY_DATABASE_URI
 SQLALCHEMY_ECHO = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 API_URL = 'http://ws.audioscrobbler.com/2.0/'
-API_KEY = "b6efafaeb5b8cf7b9b0daa2199034574"
+API_KEY = private.API_KEY
 
 
 # PROPAGATE_EXCEPTIONS = None

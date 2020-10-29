@@ -6,3 +6,4 @@
 *.log
 /.idea/
 moods.txt
+private.py

@@ -1,7 +1,7 @@
 import requests
 from flask import render_template
 from flask import current_app as app
-from config import API_KEY, API_URL
+from application.config import API_KEY, API_URL
 from application.homework_shooting_range import display_winner, competition
 
 response2 = "<script> alert( 'Привет, мир!' );</script>"
