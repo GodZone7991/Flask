@@ -5,6 +5,9 @@ ENV = 'development'
 DEBUG = True
 TESTING = True
 
+STATIC_FOLDER = 'static'
+TEMPLATES_FOLDER = 'templates'
+
 
 
 SQLALCHEMY_DATABASE_URI = private.SQLALCHEMY_DATABASE_URI
