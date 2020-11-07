@@ -44,19 +44,22 @@ def show_about():
 
 @app.route('/api')
 def show_api():
-    auth_manager = SpotifyClientCredentials()
+    auth_manager = SpotifyClientCredentials(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET)
     spotify = spotipy.Spotify(auth_manager=auth_manager)
 
     lz_uri = 'spotify:artist:36QJpDe2go2KgaRleHCDTp'
 
-    results = spotify.artist_top_tracks(lz_uri)
 
-    for track in results['tracks'][:10]:
-        print('track    : ' + track['name'])
-        print('audio    : ' + track['preview_url'])
-        print('cover art: ' + track['album']['images'][0]['url'])
-        print()
+    results = spotify.playlist('7kTsQDqmiqND9wxEP4sZx4', fields=None, market=None, additional_types=('track', ))
 
+    # for track in results['tracks'][:10]:
+    #     print('track    : ' + track['name'])
+    #     print('audio    : ' + track['preview_url'])
+    #     print('cover art: ' + track['album']['images'][0]['url'])
+    #     print()
+
+    for i in results['tracks']['items']['artists']:
+        print(i)
 
 if __name__ == '__main__':
    application = app.run()
