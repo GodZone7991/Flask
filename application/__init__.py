@@ -14,7 +14,7 @@ def create_app():
     app.config.from_object(config.DevelopmentConfig)
 
     db.init_app(app)
-    migrate.init_app(app, db,)
+    migrate.init_app(app, db, directory='migrations')
 
     with app.app_context():
         from . import routes  # Import routes

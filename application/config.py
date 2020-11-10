@@ -10,8 +10,8 @@ class BaseConfig:
     ENV = ''
     DEBUG = True
     TESTING = True
-    STATIC_FOLDER = 'static'
-    TEMPLATES_FOLDER = 'templates'
+    STATIC_FOLDER = '/static'
+    TEMPLATES_FOLDER = '/templates'
     SQLALCHEMY_DATABASE_URI = private.SQLALCHEMY_DATABASE_URI
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False

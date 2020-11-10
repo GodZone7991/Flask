@@ -1,4 +1,3 @@
-from application.app import app
 from application import create_app
 
 

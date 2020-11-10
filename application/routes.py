@@ -1,30 +1,15 @@
-import requests
+import spotipy
 from flask import render_template, make_response
 from flask import current_app as app
-from application.config import API_KEY, API_URL, SPOTIFY_CLIENT_SECRET, SPOTIFY_CLIENT_ID
+from application.config import SPOTIFY_CLIENT_SECRET, SPOTIFY_CLIENT_ID
 from application.homework_shooting_range import display_winner, competition
-import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+# from .models import db, User
 
-
-response2 = "<script> alert( 'Привет, мир!' );</script>"
 
 @app.route('/')
 def show_home():
-    headers = {
-        'user-agent': 'Psychomusic'
-    }
-
-    payload = {
-        'artist': 'Drake',
-        'api_key': API_KEY,
-        'method': 'artist.getsimilar',
-        'format': 'json'
-    }
-
-    r = requests.get(API_URL, params = payload, headers=headers)
-
-    return render_template('about.html', context=r.json())
+    return render_template('about.html')
 
 
 @app.route('/game')
@@ -40,7 +25,8 @@ def show_game():
 
 @app.route('/about')
 def show_about():
-    return render_template('home.html', context=response2)
+    return render_template('home.html')
+
 
 @app.route('/api')
 def show_api():
@@ -52,8 +38,3 @@ def show_api():
     features = spotify.audio_features(tracks=results)
     print(features)
     return make_response('OK!', 200)
-
-if __name__ == '__main__':
-   application = app.run()
-
-
