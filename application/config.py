@@ -1,25 +1,32 @@
 import private
 
-
-ENV = 'development'
-DEBUG = True
-TESTING = True
-
-STATIC_FOLDER = 'static'
-TEMPLATES_FOLDER = 'templates'
-
-
-
-SQLALCHEMY_DATABASE_URI = private.SQLALCHEMY_DATABASE_URI
-SQLALCHEMY_ECHO = False
-SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-
 API_URL = 'http://ws.audioscrobbler.com/2.0/'
 API_KEY = private.API_KEY
 SPOTIFY_CLIENT_SECRET = private.SPOTIFY_CLIENT_SECRET
 SPOTIFY_CLIENT_ID = private.SPOTIFY_CLIENT_ID
 
+
+class BaseConfig:
+    ENV = ''
+    DEBUG = True
+    TESTING = True
+    STATIC_FOLDER = 'static'
+    TEMPLATES_FOLDER = 'templates'
+    SQLALCHEMY_DATABASE_URI = private.SQLALCHEMY_DATABASE_URI
+    SQLALCHEMY_ECHO = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+class DevelopmentConfig(BaseConfig):
+    DEBUG = True
+    TESTING = True
+    pass
+
+
+class ProductionConfig(BaseConfig):
+    DEBUG = False
+    TESTING = False
+    pass
 # PROPAGATE_EXCEPTIONS = None
 # PRESERVE_CONTEXT_ON_EXCEPTION = None
 # SECRET_KEY = None
