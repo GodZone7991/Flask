@@ -1,5 +1,5 @@
 import requests
-from flask import render_template
+from flask import render_template, make_response
 from flask import current_app as app
 from application.config import API_KEY, API_URL, SPOTIFY_CLIENT_SECRET, SPOTIFY_CLIENT_ID
 from application.homework_shooting_range import display_winner, competition
@@ -46,20 +46,12 @@ def show_about():
 def show_api():
     auth_manager = SpotifyClientCredentials(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET)
     spotify = spotipy.Spotify(auth_manager=auth_manager)
-
-    lz_uri = 'spotify:artist:36QJpDe2go2KgaRleHCDTp'
-
-
-    results = spotify.playlist('7kTsQDqmiqND9wxEP4sZx4', fields=None, market=None, additional_types=('track', ))
-
-    # for track in results['tracks'][:10]:
-    #     print('track    : ' + track['name'])
-    #     print('audio    : ' + track['preview_url'])
-    #     print('cover art: ' + track['album']['images'][0]['url'])
-    #     print()
-
-    for i in results['tracks']['items']['artists']:
-        print(i)
+    results = spotify.playlist('7kTsQDqmiqND9wxEP4sZx4', fields=None, market='RU', additional_types=('track', ))
+    results = results['tracks']['items']
+    results = [item['track']['id'] for item in results]
+    features = spotify.audio_features(tracks=results)
+    print(features)
+    return make_response('OK!', 200)
 
 if __name__ == '__main__':
    application = app.run()
