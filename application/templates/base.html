@@ -8,9 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="">
-    {% block title %}
-        <title>Home</title>
-    {% endblock %}
+        <title>{{ title }}</title>
     <link rel ="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel ="stylesheet" href="">
@@ -27,7 +25,7 @@
 <header class="header">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for("show_home")}}"><img src="" height="25">Flask App</a>
+            <a class="navbar-brand" href="{{ url_for("core_bp.home")}}"><img src="" height="25">Flask App</a>
         </div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -35,13 +33,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item mr-2 ml-2">
-                    <a class="nav-link custom-nav-link" href="{{ url_for("show_home")}}">Home</a>
+                    <a class="nav-link custom-nav-link" href="{{ url_for("core_bp.home")}}">Home</a>
                 </li>
                 <li class="nav-item mr-2 ml-2">
-                    <a class="nav-link custom-nav-link" href="{{ url_for("show_game") }}">Game</a>
+                    <a class="nav-link custom-nav-link" href="{{ url_for("bot_bp.home") }}">Game</a>
                 </li>
                 <li class="nav-item mr-2 ml-2">
-                    <a class="nav-link custom-nav-link" href="{{ url_for ("show_about") }}">About</a>
+                    <a class="nav-link custom-nav-link" href="{{ url_for ("core_bp.about") }}">About</a>
                 </li>
             </ul>
         </div>
