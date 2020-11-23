@@ -4,6 +4,7 @@ API_URL = 'http://ws.audioscrobbler.com/2.0/'
 API_KEY = private.API_KEY
 SPOTIFY_CLIENT_SECRET = private.SPOTIFY_CLIENT_SECRET
 SPOTIFY_CLIENT_ID = private.SPOTIFY_CLIENT_ID
+DATABASE_URI_TEMPLATE = 'postgresql+psycopg2://{username}:{password}@{hostname}:{port}/{db_name}'
 
 
 class BaseConfig:
@@ -12,7 +13,7 @@ class BaseConfig:
     TESTING = True
     STATIC_FOLDER = '/static'
     TEMPLATES_FOLDER = '/templates'
-    SQLALCHEMY_DATABASE_URI = private.SQLALCHEMY_DATABASE_URI
+    SQLALCHEMY_DATABASE_URI = DATABASE_URI_TEMPLATE.format
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -20,13 +21,17 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
     TESTING = True
+    SQLALCHEMY_DATABASE_URI = BaseConfig.SQLALCHEMY_DATABASE_URI(**private.db_properties_dev)
     pass
 
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
     TESTING = False
+    SQLALCHEMY_DATABASE_URI = BaseConfig.SQLALCHEMY_DATABASE_URI(**private.db_properties_prod)
     pass
+
+
 # PROPAGATE_EXCEPTIONS = None
 # PRESERVE_CONTEXT_ON_EXCEPTION = None
 # SECRET_KEY = None
