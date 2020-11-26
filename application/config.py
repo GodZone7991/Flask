@@ -4,6 +4,7 @@ API_URL = 'http://ws.audioscrobbler.com/2.0/'
 API_KEY = private.API_KEY
 SPOTIFY_CLIENT_SECRET = private.SPOTIFY_CLIENT_SECRET
 SPOTIFY_CLIENT_ID = private.SPOTIFY_CLIENT_ID
+SPOTIFY_REDIRECT_URI = 'http://127.0.0.1:5000/'
 DATABASE_URI_TEMPLATE = 'postgresql+psycopg2://{username}:{password}@{hostname}:{port}/{db_name}'
 
 

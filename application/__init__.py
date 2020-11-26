@@ -19,11 +19,11 @@ def create_app():
     with app.app_context():
         from application.core.core import core_bp
         from .bot.bot import bot_bp
-        from .playlist.playlist import playlist_bp
+        from .spotify.spotify import spotify_bp
         db.create_all()  # Create sql tables for our data models
         app.register_blueprint(core_bp)
         app.register_blueprint(bot_bp)
-        app.register_blueprint(playlist_bp)
+        app.register_blueprint(spotify_bp)
         return app
 
 # TODO: Интерфейс парсинга плейлиста
