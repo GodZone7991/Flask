@@ -1,11 +1,15 @@
 import private
 
+
 API_URL = 'http://ws.audioscrobbler.com/2.0/'
 API_KEY = private.API_KEY
 SPOTIFY_CLIENT_SECRET = private.SPOTIFY_CLIENT_SECRET
 SPOTIFY_CLIENT_ID = private.SPOTIFY_CLIENT_ID
 SPOTIFY_REDIRECT_URI = 'http://127.0.0.1:5000/'
 DATABASE_URI_TEMPLATE = 'postgresql+psycopg2://{username}:{password}@{hostname}:{port}/{db_name}'
+TG_BOT_TOKEN = private.TG_BOT_TOKEN
+TG_API_ID = private.TG_API_ID
+TG_API_HASH_KEY = private.TG_API_HASH_KEY
 
 
 class BaseConfig:
@@ -17,6 +21,8 @@ class BaseConfig:
     SQLALCHEMY_DATABASE_URI = DATABASE_URI_TEMPLATE.format
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SESSION_TYPE = 'filesystem'
+    SESSION_FILE_DIR = './.flask_session/'
 
 
 class DevelopmentConfig(BaseConfig):
