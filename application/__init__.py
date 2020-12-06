@@ -21,21 +21,13 @@ def create_app():
 
     with app.app_context():
         from application.core.core import core_bp
+        from .core import routes as core_routes
         from .bot.bot import bot_bp
+        from .bot import routes as bot_routes
         from .spotify.spotify import spotify_bp
+        from .spotify import routes as spotify_routes
         db.create_all()  # Create sql tables for our data models
         app.register_blueprint(core_bp)
         app.register_blueprint(bot_bp)
         app.register_blueprint(spotify_bp)
         return app
-
-# TODO: Интерфейс парсинга плейлиста
-# TODO: Интерфейс сохранения данных парсинга в БД
-# TODO: Интерфейс вызова данных из БД и составления запроса к API
-# TODO: Интрефейс обработки ответа API и сохранения в БД
-# TODO: Интерфейс передачи из БД в сисетему ML
-# TODO: Интерфейс приема данных от ML и записи в БД (mood set)
-# TODO: Интерфейс генерации плейлиста для пользователя на основе mood set'а из БД
-# TODO: продумать модель с использованием прокси-параметров для поиска в базе spotify
-# TODO: опробовать модель с избыточным числом параметров
-# TODO: Посмотреть документацию к TensorFlow, прикрутить тест оценки настроения,
