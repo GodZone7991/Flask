@@ -1,10 +1,34 @@
 from flask import Blueprint
-from flask import current_app as app
+from application.config import SPOTIFY_CLIENT_SECRET, SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URI
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+# from flask import current_app as app
+import os
+
+
+CACHES_FOLDER = './.spotify_caches/'
+
+
+SPOTIFY_PARAMS = {
+    'client_id': SPOTIFY_CLIENT_ID,
+    'client_secret': SPOTIFY_CLIENT_SECRET,
+    'redirect_uri': SPOTIFY_REDIRECT_URI,
+}
+
+
+def create_caches():
+    if not os.path.exists(CACHES_FOLDER):
+        os.makedirs(CACHES_FOLDER)
 
 
 # Blueprint Configuration
 spotify_bp = Blueprint(
     "spotify_bp", __name__, template_folder="templates", static_folder="static", url_prefix='/spotify')
+
+
+create_caches()
+
+
 
 # TODO: Интерфейс парсинга плейлиста
 # TODO: Интерфейс сохранения данных парсинга в БД
