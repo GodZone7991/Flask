@@ -27,15 +27,14 @@ def home():
     )
 
 
-@bot_bp.route("/bot{}".format(TG_BOT_TOKEN), methods=["POST"])
+@bot_bp.route("/{}".format(TG_BOT_TOKEN), methods=["POST"])
 def get_message():
-    """Indexing page with info about a bot"""
+    """
+    The function accepts messages from telegram.
+    :return: make_response()
+    """
     if request.method == "POST":
         update = telegram.update.Update.de_json(request.json, bot)
         dispatcher.process_update(update)
         return make_response(request.json, 200)
-    return render_template(
-        'index.html',
-        title="PsyMusic Bot",
-        body='Саня хуй соси'
-    )
+    return make_response('Method not allowed', 405)
