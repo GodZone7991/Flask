@@ -1,12 +1,13 @@
 import private
 
 
+BASE_URL = 'http://127.0.0.1:5000/'
+DATABASE_URI_TEMPLATE = 'postgresql+psycopg2://{username}:{password}@{hostname}:{port}/{db_name}'
 API_URL = 'http://ws.audioscrobbler.com/2.0/'
 API_KEY = private.API_KEY
 SPOTIFY_CLIENT_SECRET = private.SPOTIFY_CLIENT_SECRET
 SPOTIFY_CLIENT_ID = private.SPOTIFY_CLIENT_ID
-SPOTIFY_REDIRECT_URI = 'http://127.0.0.1:5000/'
-DATABASE_URI_TEMPLATE = 'postgresql+psycopg2://{username}:{password}@{hostname}:{port}/{db_name}'
+SPOTIFY_REDIRECT_URI = BASE_URL + 'spotify/account'
 TG_BOT_TOKEN = private.TG_BOT_TOKEN
 TG_API_ID = private.TG_API_ID
 TG_API_HASH_KEY = private.TG_API_HASH_KEY
