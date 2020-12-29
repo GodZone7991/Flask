@@ -1,19 +1,19 @@
 import spotipy
 from application.core.models import db, Track
 from sqlalchemy import exc
-from .spotify import SPOTIFY_PARAMS, CACHES_FOLDER
+from .spotify import SPOTIFY_PARAMS, SPOTIFY_CACHES
 
 
 def initialize_spotify(session):
     auth_manager = spotipy.SpotifyOAuth(**SPOTIFY_PARAMS)
-    auth_manager.cache_path = CACHES_FOLDER + session
+    auth_manager.cache_path = SPOTIFY_CACHES + session
     spotify = spotipy.Spotify(auth_manager)
     return spotify
 
 
 def login(session, redir_url='spotify_bp.login', code=None):
     auth_manager = spotipy.SpotifyOAuth(**SPOTIFY_PARAMS)
-    auth_manager.cache_path = CACHES_FOLDER + session
+    auth_manager.cache_path = SPOTIFY_CACHES + session
     if code is None and auth_manager.get_cached_token() is None:
         return auth_manager.get_authorize_url()
     if code:
