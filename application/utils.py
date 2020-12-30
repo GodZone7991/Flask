@@ -32,3 +32,16 @@ def read_cache(cache_file) -> dict:
     with open(cache_file, 'r', encoding='utf-8') as file:
         data = json.load(file)
         return data
+
+
+def add_cache_data(file, **kwargs) -> None:
+    """
+    The function writes accepted data to the file. The data is named parameters.
+    :param file: a file object
+    :param kwargs: named parameters
+    :return: None
+    """
+    user_info = read_cache(file)
+    for k, v in kwargs.items():
+        user_info[k] = v
+    write_cache(file, user_info)
