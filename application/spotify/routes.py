@@ -1,8 +1,9 @@
-# from flask import current_app as app
 from flask import make_response, jsonify, request, redirect, url_for, session
 from .spotify import spotify_bp
 from . import controller
 import uuid
+from application.bot.bot_manager import callback, TELEGRAM_CACHES
+from application import utils
 
 
 # TODO: Make user login function
@@ -11,13 +12,21 @@ import uuid
 @spotify_bp.route('/account', methods=['GET'])
 def login():
     code = request.args.get('code')
+    user_tg = request.args.get('telegram-id')
     if session.get('uuid') is None:
         session['uuid'] = str(uuid.uuid4())
+        session['telegram-id'] = user_tg
         _login = controller.login(session=session.get('uuid'), code=code)
         return redirect(_login)
     if code is not None:
         _login = controller.login(session=session.get('uuid'), code=code)
         return redirect(url_for(_login))
+    telegram_session = ''.join((TELEGRAM_CACHES, session['telegram-id']))
+    data = {'spotify_session': session['uuid'],
+            'logged_in': 1,
+            'current_status': 1}
+    utils.add_cache_data(telegram_session, **data)
+    callback(session['telegram-id'])
     return make_response("You've successfully logged in!", 200)
 
 
