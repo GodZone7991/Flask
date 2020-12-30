@@ -2,12 +2,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import application.config as config
 from flask_migrate import Migrate
-from flask_sessions import Session
 
 
 db = SQLAlchemy()
 migrate = Migrate()
-session = Session()
 
 
 def create_app():
@@ -17,7 +15,6 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db, directory='migrations')
-    session.init_app(app)
 
     with app.app_context():
         from application.core.core import core_bp

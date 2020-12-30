@@ -24,6 +24,7 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SESSION_TYPE = 'filesystem'
     SESSION_FILE_DIR = './.flask_session/'
+    SECRET_KEY = private.SECRET_KEY
 
 
 class DevelopmentConfig(BaseConfig):
