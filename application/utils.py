@@ -1,5 +1,12 @@
 import os
 import json
+import csv
+
+
+def check_existence(caches_path: str) -> bool:
+    if os.path.isfile(caches_path):
+        return True
+    return False
 
 
 def create_caches(caches_path: str) -> None:
@@ -12,7 +19,7 @@ def create_caches(caches_path: str) -> None:
         os.makedirs(caches_path)
 
 
-def write_cache(cache_file, data: dict) -> None:
+def write_cache(cache_file, data: dict, file_format: str = 'json') -> None:
     """
     The function writes data into a json-like file.
     :param cache_file: a file object
@@ -20,10 +27,16 @@ def write_cache(cache_file, data: dict) -> None:
     :return: None
     """
     with open(cache_file, 'w', encoding='utf-8') as file:
-        json.dump(data, file)
+        if file_format == 'json':
+            json.dump(data, file)
+        elif file_format == 'csv':
+            print(data, type(data))
+            writer = csv.DictWriter(file, fieldnames=data.pop().keys())
+            writer.writeheader()
+            writer.writerows(data)
 
 
-def read_cache(cache_file) -> dict:
+def read_cache(cache_file, format: str = 'json') -> dict:
     """
     The function reads data from a cache file.
     :param cache_file: a file object
@@ -45,3 +58,11 @@ def add_cache_data(file, **kwargs) -> None:
     for k, v in kwargs.items():
         user_info[k] = v
     write_cache(file, user_info)
+
+
+def remove_cache(cache_file):
+    if os.path.exists(cache_file):
+        os.remove(cache_file)
+        return "File was removed"
+    else:
+        return "File doesn't exist"
