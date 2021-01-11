@@ -2,7 +2,7 @@ from flask import make_response, jsonify, request, redirect, url_for, session
 from .spotify import spotify_bp
 from . import controller
 import uuid
-from application.bot.bot_manager import callback, TELEGRAM_CACHES
+from application.bot.controller import callback, TELEGRAM_CACHES
 from application import utils
 
 
@@ -22,11 +22,14 @@ def login():
         _login = controller.login(session=session.get('uuid'), code=code)
         return redirect(url_for(_login))
     telegram_session = ''.join((TELEGRAM_CACHES, session['telegram-id']))
+    user_info = controller.get_user_info(session['uuid'])
     data = {'spotify_session': session['uuid'],
+            'spotify_name': user_info['display_name'],
+            'spotify_id': user_info['id'],
             'logged_in': 1,
             'current_status': 1}
     utils.add_cache_data(telegram_session, **data)
-    callback(session['telegram-id'])
+    callback(session['telegram-id'], text=user_info['display_name'])
     return make_response("You've successfully logged in!", 200)
 
 
@@ -34,16 +37,18 @@ def login():
 def parse_playlist() -> make_response():
 
     """
-    This view expect two request parameters: spotify id and mood label. It finds spotify playlist by Spotify API, gets
-    track's features list, and sets a mood label to every track in it. After all it saves the added track to the DB.
+    This view expect three request parameters: telegram id, spotify id and mood label. It finds spotify playlist by
+    Spotify API, gets track's features list, and sets a mood label to every track in it. After all it saves the added
+    track to the DB.
     :return: make_response(status, code)
     """
+    current_session = utils.read_cache(''.join((TELEGRAM_CACHES, request.args.get('user'))))
     playlist_id = request.args.get('playlist')
-    if playlist_id is None:
-        return make_response('No arguments transmitted', 200)
-    else:
-        response = controller.parse_playlist(playlist_id)
-        return make_response(response, 200)
+    mood = request.args.get('mood')
+    features, track_list = controller.parse_playlist(current_session['spotify_session'], playlist_id)
+    controller.save_tracks(features, track_list, mood)
+    response = {'text': 'The playlist was updated'}
+    return make_response(jsonify(response), 200)
 
 
 @spotify_bp.route('/get_recommendations', methods=['GET'])
@@ -55,8 +60,15 @@ def get_playlist() -> make_response():
     :return: make_response(status, code)
     """
     # TODO: make a returning value of this function more informative and adaptive; make error handlers
-    current_session = session.get('uuid')
+    current_session = utils.read_cache(''.join((TELEGRAM_CACHES, request.get('user'))))
     if current_session is None:
         return redirect(url_for('spotify_bp.login'))
-    response = controller.get_playlist(session=current_session)
+    response = controller.get_playlist(session=current_session['spotify_session'])
     return make_response(response)
+
+
+@spotify_bp.route('/get_tracks', methods=['GET'])
+def get_tracks():
+    options = request.args
+    tracks = controller.get_tracks_data(**options)
+    return make_response(jsonify(tracks), 200)
