@@ -33,4 +33,9 @@ class Track(db.Model):
 
     def __repr__(self):
         return '<Track {} - {}>'.format(self.name, self.track_id)
+
+    def get_json(self):
+        data = self.__dict__
+        del data['_sa_instance_state']
+        return data
     pass
