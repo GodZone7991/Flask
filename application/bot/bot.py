@@ -6,6 +6,7 @@ from application import utils
 
 
 TELEGRAM_CACHES = './.telegram_caches/'
+TELEGRAM_FILES = './.telegram_files/'
 
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -21,6 +22,7 @@ bot_bp = Blueprint("bot_bp", __name__, template_folder="templates", static_folde
 
 # create a directory for cache
 utils.create_caches(TELEGRAM_CACHES)
+utils.create_caches(TELEGRAM_FILES)
 
 
 # create a bot instance

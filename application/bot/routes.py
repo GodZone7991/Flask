@@ -1,5 +1,5 @@
 from .bot import bot_bp, bot
-from .bot_manager import dispatcher
+from .controller import dispatcher
 import telegram
 from flask import render_template, request, make_response
 from application.config import TG_BOT_TOKEN
