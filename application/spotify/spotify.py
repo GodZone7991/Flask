@@ -31,7 +31,7 @@ SPOTIFY_PARAMS = {
 
 # Blueprint Configuration
 spotify_bp = Blueprint(
-    "spotify_bp", __name__, template_folder="templates", static_folder="static", url_prefix='/spotify')
+    "spotify_bp", __name__, template_folder="spotify/templates", static_folder="spotify/static", url_prefix='/spotify')
 
 
 utils.create_caches(SPOTIFY_CACHES)
