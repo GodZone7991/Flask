@@ -19,6 +19,13 @@ SPOTIFY_PARAMS = {
     'client_id': SPOTIFY_CLIENT_ID,
     'client_secret': SPOTIFY_CLIENT_SECRET,
     'redirect_uri': SPOTIFY_REDIRECT_URI,
+    'scope': ','.join([
+        'user-read-recently-played',
+        'user-top-read',
+        'user-library-read',
+        'playlist-modify-private',
+        'playlist-modify-public',
+    ])
 }
 
 
