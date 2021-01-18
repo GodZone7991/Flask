@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name 46.101.163.84 www.46.101.163.84 psychomusic.ga www.psychomusic.ga;
+    server_name $server_ip www.$server_ip;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
