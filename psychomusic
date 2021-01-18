@@ -1,6 +1,6 @@
 server {
-    listen 80;
-    server_name $realip_remote_addr www.$realip_remote_addr;
+    listen $realip_remote_addr:80;
+    server_name psychomusic.ga www.psychomusic.ga;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
