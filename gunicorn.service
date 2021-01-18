@@ -8,7 +8,13 @@ User=psychomusic
 Group=www-data
 WorkingDirectory=/home/psychomusic/Flask
 Environment="PATH=/home/psychomusic/venv/bin"
-ExecStart=/home/psychomusic/venv/bin/gunicorn --access-logfile access.log --log-file gunicorn.log --error-log gunicorn_err.log --workers 3 --bind unix:/run/gunicorn.sock -m 007 wsgi:app
+ExecStart=/home/psychomusic/venv/bin/gunicorn \
+--access-logfile access.log \
+--log-file gunicorn.log \
+--error-log gunicorn_err.log \
+--workers 3 \
+--bind unix:/home/psychomusic/run/gunicorn.sock \
+-m 007 wsgi:app
 
 
 [Install]

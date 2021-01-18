@@ -1,14 +1,14 @@
 server {
-    listen $realip_remote_addr:80;
-    server_name psychomusic.ga www.psychomusic.ga;
+    listen 80;
+    server_name 46.101.163.84 psychomusic.ga www.psychomusic.ga;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
-        root /home/psychomusic/Flask/application/*;
+        root /home/psychomusic/Flask/application/*/;
     }
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/run/gunicorn.sock;
+        proxy_pass http://unix:/home/psychomusic/run/gunicorn.sock;
     }
 }
