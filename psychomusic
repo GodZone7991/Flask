@@ -1,6 +1,17 @@
 server {
     listen 80;
     server_name 46.101.163.84 psychomusic.ga www.psychomusic.ga;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen  443 ssl;
+    ssl on;
+    ssl_certificate     /home/psychomuic/certificate.pem;
+    ssl_certificate_key /home/psychomuic/psychomusic_private.key;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    server_name 46.101.163.84 psychomusic.ga www.psychomusic.ga;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
