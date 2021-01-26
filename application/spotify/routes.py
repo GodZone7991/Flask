@@ -37,9 +37,12 @@ def login():
 def parse_playlist() -> make_response():
 
     """
-    This view expect three request parameters: telegram id, spotify id and mood label. It finds spotify playlist by
-    Spotify API, gets track's features list, and sets a mood label to every track in it. After all it saves the added
-    track to the DB.
+    This view expect three request parameters:
+    telegram id,
+    spotify id,
+    mood label
+    It finds spotify playlist by Spotify API, gets track's features list, and sets a mood label to every track in it.
+    After all it saves the added track to the DB.
     :return: make_response(status, code)
     """
     current_session = utils.read_cache(''.join((TELEGRAM_CACHES, request.args.get('user'))))
@@ -72,3 +75,16 @@ def get_tracks():
     options = request.args
     tracks = controller.get_tracks_data(**options)
     return make_response(jsonify(tracks), 200)
+
+
+@spotify_bp.route('/get_user_top_tracks', methods=['GET'])
+def get_user_top_tracks():
+    user = request.args.get('user')
+    current_session = utils.read_cache(''.join([TELEGRAM_CACHES, user]))
+    tracks = controller.get_user_top_tracks(current_session['spotify_session'])
+    tracks = [[track['id'], track['name']] for track in tracks['items']]
+    features = controller.get_features_for_track_list(
+        current_session['spotify_session'],
+        [track[0] for track in tracks])
+    controller.save_user_top_features(user, features)
+    return make_response(jsonify(features), 200)

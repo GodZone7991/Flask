@@ -2,6 +2,8 @@ import spotipy
 from application.core.models import db, Track
 from sqlalchemy import exc
 from .spotify import SPOTIFY_PARAMS, SPOTIFY_CACHES
+from application.bot.bot import TELEGRAM_CACHES
+from application import utils
 
 
 def initialize_spotify(session):
@@ -22,8 +24,8 @@ def login(session, redir_url='spotify_bp.login', code=None):
     return redir_url
 
 
-def get_user_info(session, spotify=initialize_spotify):
-    spotify = spotify(session)
+def get_user_info(session):
+    spotify = initialize_spotify(session)
     user_info = spotify.me()
     return user_info
 
@@ -64,7 +66,7 @@ def save_tracks(features: list, track_info: list, mood: str) -> str:
     return 'OK!'
 
 
-def parse_playlist(session: str, playlist_id: str, spotify=initialize_spotify):
+def parse_playlist(session: str, playlist_id: str):
 
     """
     This view expect two request parameters: spotify id and mood label. It finds spotify playlist by Spotify API and
@@ -76,7 +78,7 @@ def parse_playlist(session: str, playlist_id: str, spotify=initialize_spotify):
     counter = 0
     offset = limit * counter
     track_list = []
-    spotify = spotify(session)
+    spotify = initialize_spotify(session)
     playlist = spotify.playlist_items(
         playlist_id,
         fields='items.track.id, items.track.name, total',
@@ -105,3 +107,21 @@ def get_tracks_data(**kwargs):
     tracks = Track.query.filter(Track.mood_label == kwargs['mood']).all()
     tracks = [track.get_json() for track in tracks]
     return tracks
+
+
+def get_user_top_tracks(session: str):
+    spotify = initialize_spotify(session)
+    user_top_tracks = spotify.current_user_top_tracks(limit=100, time_range='long_term')
+    return user_top_tracks
+
+
+def get_features_for_track_list(session: str, track_id_list: list):
+    spotify = initialize_spotify(session)
+    features = spotify.audio_features(track_id_list)
+    return features
+
+
+def save_user_top_features(user: str, features: list):
+    cache_file = ''.join([TELEGRAM_CACHES, user])
+    utils.add_cache_data(cache_file, features=features)
+

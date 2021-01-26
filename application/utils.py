@@ -4,9 +4,7 @@ import csv
 
 
 def check_existence(caches_path: str) -> bool:
-    if os.path.isfile(caches_path):
-        return True
-    return False
+    return os.path.isfile(caches_path)
 
 
 def create_caches(caches_path: str) -> None:
@@ -22,6 +20,7 @@ def create_caches(caches_path: str) -> None:
 def write_cache(cache_file, data: dict, file_format: str = 'json') -> None:
     """
     The function writes data into a json-like file.
+    :param file_format: format of a saved file: csv or json
     :param cache_file: a file object
     :param data: a json-like object, e.g. dict
     :return: None
@@ -36,14 +35,17 @@ def write_cache(cache_file, data: dict, file_format: str = 'json') -> None:
             writer.writerows(data)
 
 
-def read_cache(cache_file, format: str = 'json') -> dict:
+def read_cache(cache_file, file_format: str = 'json') -> dict:
     """
     The function reads data from a cache file.
     :param cache_file: a file object
     :return: data: a json-like object e.g. dict
     """
     with open(cache_file, 'r', encoding='utf-8') as file:
-        data = json.load(file)
+        if file_format == 'json':
+            data = json.load(file)
+        elif file_format == 'csv':
+            data = csv.reader(file)
         return data
 
 
