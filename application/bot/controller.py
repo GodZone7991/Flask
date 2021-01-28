@@ -1,33 +1,24 @@
 from flask import url_for
 import requests
-from .bot import bot, TELEGRAM_CACHES, BASE_URL, TELEGRAM_FILES
-from telegram.ext import (
-    Updater,
-    CommandHandler,
-    MessageHandler,
-    filters,
-)
+from .bot import bot, TELEGRAM_CACHES, BASE_URL, TELEGRAM_FILES, dispatcher
+from telegram.ext import CommandHandler, MessageHandler, filters
 from application import utils
 
-USER_INFO_TEMPLATE = {'user_id': '',  # user telegram id
-                      'logged_in': 0,  # True-False value
-                      'spotify_id': '',
-                      'spotify_session': '',
-                      'current_status': 0,  # status code for future features
-                      }
+USER_INFO_TEMPLATE = {
+    'user_id': '',  # user telegram id
+    'logged_in': 0,  # True-False value
+    'spotify_id': '',
+    'spotify_session': '',
+    'current_status': 0,  # status code for future features
+}
 
 
 AVAILABLE_FORMATS = 'json', 'csv'
 AVAILABLE_MOODS = 'aggressive', 'depressive', 'chill', 'happy'
 
 
-# initialisation of an updater instance and a dispatcher one for it
-updater = Updater(bot=bot)
-dispatcher = updater.dispatcher
-
-
-def callback(chat_id, text="You"):
-    bot.send_message(chat_id=chat_id, text=f"{text} successfully logged in")
+def callback(chat_id, text="undefined"):
+    bot.send_message(chat_id=chat_id, text=f"You've been successfully logged in as {text}")
 
 
 def start(update, context):
@@ -80,7 +71,6 @@ def get_track_data(update, context):
     file_name = ''.join([TELEGRAM_FILES, f'{mood}.{file_format}'])
     if not utils.check_existence(file_name):
         data = requests.request('GET', ''.join([BASE_URL, url_for('spotify_bp.get_tracks')]), params=payload).json()
-        print(data), print(type(data))
         utils.write_cache(file_name, data, file_format=file_format)
     with open(file_name, mode='rb') as file:
         context.bot.send_document(chat_id=update.effective_chat.id, document=file, filename=f'{mood}.{file_format}')
