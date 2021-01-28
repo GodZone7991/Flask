@@ -1,6 +1,7 @@
 from flask import Blueprint
 from application.config import TG_BOT_TOKEN, BASE_URL
-import telegram
+from telegram import Bot
+from telegram.ext import Updater
 import logging
 from application import utils
 
@@ -26,4 +27,6 @@ utils.create_caches(TELEGRAM_FILES)
 
 
 # create a bot instance
-bot = telegram.Bot(token=TG_BOT_TOKEN)
+bot = Bot(token=TG_BOT_TOKEN)
+updater = Updater(bot=bot)
+dispatcher = updater.dispatcher
