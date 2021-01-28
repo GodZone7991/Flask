@@ -3,10 +3,6 @@ import json
 import csv
 
 
-def check_existence(caches_path: str) -> bool:
-    return os.path.isfile(caches_path)
-
-
 def create_caches(caches_path: str) -> None:
     """
     The function checks existence and creates a cache folder.
@@ -15,6 +11,59 @@ def create_caches(caches_path: str) -> None:
     """
     if not os.path.exists(caches_path):
         os.makedirs(caches_path)
+
+
+class User:
+
+    def __init__(self, user_id: str, cache_path: str = '.telegram_caches/'):
+        self.user_id = user_id
+        self.cache_file = ''.join([cache_path, user_id])
+        return
+
+    def write_cache(self, data: dict) -> None:
+        """
+        The method writes data into a json-like file.
+        :param data: a json-like object, e.g. dict
+        :return: None
+        """
+        with open(self.cache_file, 'w', encoding='utf-8') as file:
+            json.dump(data, file)
+
+    @property
+    def cached_data(self) -> dict:
+        """
+        The method reads data from a cache file.
+        :return: data: a json-like object e.g. dict
+        """
+        with open(self.cache_file, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            return data
+
+    def is_exist(self) -> bool:
+        return os.path.isfile(self.cache_file)
+
+    def add_cache_data(self, **kwargs) -> None:
+        """
+        The method writes accepted data to the file. The data is named parameters.
+        :param kwargs: named parameters
+        :return: None
+        """
+        caching_data = self.cached_data
+        for k, v in kwargs.items():
+            caching_data[k] = v
+        write_cache(self.cache_file, caching_data)
+
+    def remove_cache(self):
+        if os.path.exists(self.cache_file):
+            os.remove(self.cache_file)
+            return "File was removed"
+        else:
+            return "File doesn't exist"
+    pass
+
+
+def check_existence(caches_path: str) -> bool:
+    return os.path.isfile(caches_path)
 
 
 def write_cache(cache_file, data: dict, file_format: str = 'json') -> None:

@@ -23,11 +23,14 @@ def login():
         return redirect(url_for(_login))
     telegram_session = ''.join((TELEGRAM_CACHES, session['telegram-id']))
     user_info = controller.get_user_info(session['uuid'])
+    user_top_tracks = controller.get_user_top_tracks(session['uuid'])
+    features = controller.get_features_for_track_list(session['uuid'], user_top_tracks)
     data = {'spotify_session': session['uuid'],
             'spotify_name': user_info['display_name'],
             'spotify_id': user_info['id'],
             'logged_in': 1,
-            'current_status': 1}
+            'current_status': 1,
+            'features': features}
     utils.add_cache_data(telegram_session, **data)
     callback(session['telegram-id'], text=user_info['display_name'])
     return make_response("You've successfully logged in!", 200)
@@ -82,9 +85,8 @@ def get_user_top_tracks():
     user = request.args.get('user')
     current_session = utils.read_cache(''.join([TELEGRAM_CACHES, user]))
     tracks = controller.get_user_top_tracks(current_session['spotify_session'])
-    tracks = [[track['id'], track['name']] for track in tracks['items']]
     features = controller.get_features_for_track_list(
         current_session['spotify_session'],
-        [track[0] for track in tracks])
+        tracks)
     controller.save_user_top_features(user, features)
     return make_response(jsonify(features), 200)
