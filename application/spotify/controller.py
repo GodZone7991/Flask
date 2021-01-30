@@ -2,32 +2,66 @@ import spotipy
 from application.core.models import db, Track
 from sqlalchemy import exc
 from .spotify import SPOTIFY_PARAMS, SPOTIFY_CACHES
-from application.bot.bot import TELEGRAM_CACHES
-from application import utils
+from application.utils import UserCache
 
 
-def initialize_spotify(session):
-    auth_manager = spotipy.SpotifyOAuth(**SPOTIFY_PARAMS)
-    auth_manager.cache_path = SPOTIFY_CACHES + session
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-    return spotify
+class Manager:
+    cache_path = SPOTIFY_CACHES
 
+    def __init__(self, user: UserCache):
+        self.session = user.cached_data.get('spotify_session')
+        self.user_id = user.cached_data.get('spotify_id')
+        self._auth_manager = spotipy.SpotifyOAuth(**SPOTIFY_PARAMS, cache_path=''.join([self.cache_path, self.session]))
+        self.spotify = self.__initialize_spotify()
 
-def login(session, redir_url='spotify_bp.login', code=None):
-    auth_manager = spotipy.SpotifyOAuth(**SPOTIFY_PARAMS)
-    auth_manager.cache_path = SPOTIFY_CACHES + session
-    if code is None and auth_manager.get_cached_token() is None:
-        return auth_manager.get_authorize_url()
-    if code:
-        auth_manager.get_access_token(code=code)
-        return redir_url
-    return redir_url
+    def __initialize_spotify(self):
+        auth_manager = self._auth_manager
+        spotify = spotipy.Spotify(auth_manager=auth_manager)
+        return spotify
 
+    @property
+    def authorize_url(self):
+        return self._auth_manager.get_authorize_url()
 
-def get_user_info(session):
-    spotify = initialize_spotify(session)
-    user_info = spotify.me()
-    return user_info
+    def get_user_top_tracks(self):
+        user_top_tracks = self.spotify.current_user_top_tracks(limit=50, time_range='long_term')
+        user_top_tracks = [track['id'] for track in user_top_tracks['items']]
+        return user_top_tracks
+
+    def parse_playlist(self, playlist_id: str):
+        """
+        :return: tuple(features, track_list)
+        """
+        track_list = []
+        features = []
+
+        def inner(offset: int = 0, counter: int = 0, limit: int = 100, *, rest: int = 0):
+            while rest > 0:
+                nonlocal track_list
+                playlist = self.spotify.playlist_items(
+                    playlist_id,
+                    fields='items.track.id, items.track.name, total',
+                    market=None,
+                    offset=offset,
+                    additional_types=('track',))
+                features.append(self.spotify.audio_features(tracks=[item['track']['id'] for item in playlist['items']]))
+                track_list += [[item['track']['id'], item['track']['name']] for item in playlist['items']]
+                counter += 1
+                rest = playlist['total'] - limit
+                return inner(counter * limit, counter, rest=rest)
+            return
+
+        return features, track_list
+
+    def get_recommendations(self):
+        recommendations = self.spotify.recommendations(seed_artists='', seed_genres='emo', seed_tracks='', limit=30)
+        return recommendations
+
+    def create_playlist(self, mood: str):
+        playlist_name = f'{mood.capitalize()} tracks for you'
+        description = f'Special tracks for your {mood} mood'
+        playlist = self.spotify.user_playlist_create(self.user_id, playlist_name, public=False, description=description)
+        return playlist['id']
 
 
 def save_tracks(features: list, track_info: list, mood: str) -> str:
@@ -66,62 +100,7 @@ def save_tracks(features: list, track_info: list, mood: str) -> str:
     return 'OK!'
 
 
-def parse_playlist(session: str, playlist_id: str):
-
-    """
-    This view expect two request parameters: spotify id and mood label. It finds spotify playlist by Spotify API and
-    gets track's features list. It returns a tuple with the json-like features sequence and a dict with id's and names
-    of gotten tracks.
-    :return: tuple(features, track_list)
-    """
-    limit = 100
-    counter = 0
-    offset = limit * counter
-    track_list = []
-    spotify = initialize_spotify(session)
-    playlist = spotify.playlist_items(
-        playlist_id,
-        fields='items.track.id, items.track.name, total',
-        market=None,
-        offset=offset,
-        additional_types=('track',))
-    features = spotify.audio_features(tracks=[item['track']['id'] for item in playlist['items']])
-    track_list += [[item['track']['id'], item['track']['name']] for item in playlist['items']]
-    counter += 1
-    rest = playlist['total'] - limit
-    while rest > 0:
-        offset = limit * counter
-        playlist = spotify.playlist_items(
-            playlist_id,
-            fields='items.track.id, items.track.name, total',
-            market=None,
-            additional_types=('track',),
-            offset=offset)
-        features = spotify.audio_features(tracks=[item['track']['id'] for item in playlist['items']])
-        track_list += [[item['track']['id'], item['track']['name']] for item in playlist['items']]
-        rest -= offset
-    return features, track_list
-
-
 def get_tracks_data(**kwargs):
     tracks = Track.query.filter(Track.mood_label == kwargs['mood']).all()
     tracks = [track.get_json() for track in tracks]
     return tracks
-
-
-def get_user_top_tracks(session: str):
-    spotify = initialize_spotify(session)
-    user_top_tracks = spotify.current_user_top_tracks(limit=100, time_range='long_term')
-    return user_top_tracks
-
-
-def get_features_for_track_list(session: str, track_id_list: list):
-    spotify = initialize_spotify(session)
-    features = spotify.audio_features(track_id_list)
-    return features
-
-
-def save_user_top_features(user: str, features: list):
-    cache_file = ''.join([TELEGRAM_CACHES, user])
-    utils.add_cache_data(cache_file, features=features)
-

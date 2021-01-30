@@ -2,7 +2,7 @@ from flask import make_response, jsonify, request, redirect, url_for, session
 from .spotify import spotify_bp
 from . import controller
 import uuid
-from application.bot.controller import callback, TELEGRAM_CACHES
+from application.bot.controller import callback as bot_callback
 from application import utils
 
 
@@ -11,29 +11,38 @@ from application import utils
 
 @spotify_bp.route('/account', methods=['GET'])
 def login():
+    user_id = session.get('user')
+    if not user_id:
+        user_id = request.args.get('user')
+    user = utils.UserCache(user_id)
+    if not user.cached_data['logged_in']:
+        session_id = user.cached_data['spotify_session']
+        session['user'] = user_id
+        session['uuid'] = session_id
+        user.update_cache(spotify_session=session_id)
+        manager = controller.Manager(user)
+        return redirect(manager.authorize_url)
+    return make_response(f"Nice to meet you, {user.cached_data.get('spotify_name')}! You've successfully logged in!", 200)
+
+
+@spotify_bp.route('/account/callback', methods=['GET'])
+def callback():
     code = request.args.get('code')
-    user_tg = request.args.get('telegram-id')
-    if session.get('uuid') is None:
-        session['uuid'] = str(uuid.uuid4())
-        session['telegram-id'] = user_tg
-        _login = controller.login(session=session.get('uuid'), code=code)
-        return redirect(_login)
-    if code is not None:
-        _login = controller.login(session=session.get('uuid'), code=code)
-        return redirect(url_for(_login))
-    telegram_session = ''.join((TELEGRAM_CACHES, session['telegram-id']))
-    user_info = controller.get_user_info(session['uuid'])
-    user_top_tracks = controller.get_user_top_tracks(session['uuid'])
-    features = controller.get_features_for_track_list(session['uuid'], user_top_tracks)
-    data = {'spotify_session': session['uuid'],
-            'spotify_name': user_info['display_name'],
-            'spotify_id': user_info['id'],
-            'logged_in': 1,
-            'current_status': 1,
-            'features': features}
-    utils.add_cache_data(telegram_session, **data)
-    callback(session['telegram-id'], text=user_info['display_name'])
-    return make_response("You've successfully logged in!", 200)
+    user = utils.UserCache(session['user'])
+    manager = controller.Manager(user)
+    manager.spotify.auth_manager.get_access_token(code)
+    user_info = manager.spotify.me()
+    user_top_tracks = manager.get_user_top_tracks()
+    features = manager.spotify.audio_features(user_top_tracks)
+    data = {
+        'spotify_name': user_info['display_name'],
+        'spotify_id': user_info['id'],
+        'logged_in': 1,
+        'current_status': 1,
+        'features': features}
+    user.update_cache(**data)
+    bot_callback(user.user_id, text=user_info['display_name'])
+    return redirect(url_for('spotify_bp.login'))
 
 
 @spotify_bp.route('/parse_playlist', methods=['GET'])
@@ -41,19 +50,22 @@ def parse_playlist() -> make_response():
 
     """
     This view expect three request parameters:
-    telegram id,
+    user - a telegram id of requesting user,
     spotify id,
     mood label
     It finds spotify playlist by Spotify API, gets track's features list, and sets a mood label to every track in it.
     After all it saves the added track to the DB.
     :return: make_response(status, code)
     """
-    current_session = utils.read_cache(''.join((TELEGRAM_CACHES, request.args.get('user'))))
+    user_id = request.args.get('user')
     playlist_id = request.args.get('playlist')
     mood = request.args.get('mood')
-    features, track_list = controller.parse_playlist(current_session['spotify_session'], playlist_id)
-    controller.save_tracks(features, track_list, mood)
-    response = {'text': 'The playlist was updated'}
+    user = controller.UserCache(user_id)
+    manager = controller.Manager(user)
+    features, track_list = controller.parse_playlist(manager.spotify, playlist_id)
+    # controller.save_tracks(features, track_list, mood)
+    # response = {'text': 'The playlist was updated'}
+    response = [features, track_list]
     return make_response(jsonify(response), 200)
 
 
@@ -66,10 +78,8 @@ def get_playlist() -> make_response():
     :return: make_response(status, code)
     """
     # TODO: make a returning value of this function more informative and adaptive; make error handlers
-    current_session = utils.read_cache(''.join((TELEGRAM_CACHES, request.get('user'))))
-    if current_session is None:
-        return redirect(url_for('spotify_bp.login'))
-    response = controller.get_playlist(session=current_session['spotify_session'])
+    manager = controller.Manager(utils.UserCache(request.args.get('user')))
+    response = manager.spotify.me()
     return make_response(response)
 
 
@@ -82,11 +92,16 @@ def get_tracks():
 
 @spotify_bp.route('/get_user_top_tracks', methods=['GET'])
 def get_user_top_tracks():
-    user = request.args.get('user')
-    current_session = utils.read_cache(''.join([TELEGRAM_CACHES, user]))
-    tracks = controller.get_user_top_tracks(current_session['spotify_session'])
-    features = controller.get_features_for_track_list(
-        current_session['spotify_session'],
-        tracks)
-    controller.save_user_top_features(user, features)
+    user_id = request.args.get('user')
+    user = controller.UserCache(user_id)
+    manager = controller.Manager(user)
+    tracks = manager.get_user_top_tracks()
+    features = manager.spotify.audio_features(tracks)
+    user.update_cache(features=features)
     return make_response(jsonify(features), 200)
+
+
+@spotify_bp.route('/test', methods=['GET'])
+def test():
+    response = ''
+    return make_response(jsonify(response))

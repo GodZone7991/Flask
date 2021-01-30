@@ -1,5 +1,5 @@
-from flask import Blueprint
-from application.config import SPOTIFY_CLIENT_SECRET, SPOTIFY_CLIENT_ID, SPOTIFY_REDIRECT_URI
+from flask import Blueprint, current_app as app
+from application.config import SPOTIFY_CLIENT_SECRET, SPOTIFY_CLIENT_ID
 from application import utils
 
 
@@ -13,7 +13,7 @@ from application import utils
 
 
 SPOTIFY_CACHES = './.spotify_caches/'
-
+SPOTIFY_REDIRECT_URI = app.config['SPOTIFY_REDIRECT_URI']
 
 SPOTIFY_PARAMS = {
     'client_id': SPOTIFY_CLIENT_ID,

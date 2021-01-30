@@ -1,16 +1,11 @@
 from flask import url_for
 import requests
-from .bot import bot, TELEGRAM_CACHES, BASE_URL, TELEGRAM_FILES, dispatcher
+import uuid
+import telegram
+from .bot import bot, BASE_URL, TELEGRAM_FILES, dispatcher
 from telegram.ext import CommandHandler, MessageHandler, filters
 from application import utils
-
-USER_INFO_TEMPLATE = {
-    'user_id': '',  # user telegram id
-    'logged_in': 0,  # True-False value
-    'spotify_id': '',
-    'spotify_session': '',
-    'current_status': 0,  # status code for future features
-}
+from application.spotify import controller
 
 
 AVAILABLE_FORMATS = 'json', 'csv'
@@ -18,41 +13,42 @@ AVAILABLE_MOODS = 'aggressive', 'depressive', 'chill', 'happy'
 
 
 def callback(chat_id, text="undefined"):
-    bot.send_message(chat_id=chat_id, text=f"You've been successfully logged in as {text}")
+    bot.send_message(chat_id=chat_id, text=text)
 
 
-def start(update, context):
-    user = f'{update.effective_chat.id}'
-    file = ''.join((TELEGRAM_CACHES, user))
-    data = USER_INFO_TEMPLATE.copy()
-    data['user_id'] = user
-    if utils.check_existence(file):
+def start(update: telegram.Update, context: telegram.ext.CallbackContext):
+    user = utils.UserCache(f'{update.effective_user.id}')
+    data = {'user_id': user.user_id, 'logged_in': 0, 'spotify_id': '', 'current_status': 0, 'spotify_session': str(uuid.uuid4())}
+    if user.is_exist():
         context.bot.send_message(chat_id=update.effective_chat.id, text="You've already started")
     else:
-        utils.write_cache(file, data)
+        user.write_cache(data)
         context.bot.send_message(chat_id=update.effective_chat.id, text="Hello there!")
 
 
-def login(update, context):
-    user = f'{update.effective_chat.id}'
-    cached_data = utils.read_cache(''.join([TELEGRAM_CACHES, user]))
-    if cached_data['logged_in']:
-        context.bot.send_message(chat_id=user, text=f"You've already logged in as {cached_data['spotify_name']}")
+def login(update: telegram.Update, context: telegram.ext.CallbackContext):
+    user = utils.UserCache(f'{update.effective_chat.id}')
+    print(user)
+    if user.cached_data['logged_in']:
+        context.bot.send_message(
+            chat_id=user.user_id,
+            text=f"You've already logged in as {user.cached_data['spotify_name']}")
     else:
         context.bot.send_message(
-            chat_id=user,
+            chat_id=user.user_id,
             text=''.join(
                 (BASE_URL,
                  url_for('spotify_bp.login'),
-                 f'?telegram-id={user}')
+                 f'?telegram-id={user.user_id}')
             ))
 
 
-def test(update, context):
+def test(update: telegram.Update, context: telegram.ext.CallbackContext):
+    print(update.effective_user.id)
     context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
 
 
-def update_track_data(update, context):
+def update_track_data(update: telegram.Update, context: telegram.ext.CallbackContext):
     spotify_uri, mood = context.args
     user = update.effective_chat.id
     payload = {'mood': mood, 'playlist': spotify_uri.split(':').pop(), 'user': user}
@@ -61,7 +57,7 @@ def update_track_data(update, context):
     return
 
 
-def get_track_data(update, context):
+def get_track_data(update: telegram.Update, context: telegram.ext.CallbackContext):
     payload = {'mood': context.args[0], 'format': context.args[1]}
     mood = payload['mood']
     file_format = payload['format']
@@ -71,7 +67,7 @@ def get_track_data(update, context):
     file_name = ''.join([TELEGRAM_FILES, f'{mood}.{file_format}'])
     if not utils.check_existence(file_name):
         data = requests.request('GET', ''.join([BASE_URL, url_for('spotify_bp.get_tracks')]), params=payload).json()
-        utils.write_cache(file_name, data, file_format=file_format)
+        utils.write_file(file_name, data, file_format=file_format)
     with open(file_name, mode='rb') as file:
         context.bot.send_document(chat_id=update.effective_chat.id, document=file, filename=f'{mood}.{file_format}')
     return
