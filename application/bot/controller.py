@@ -27,8 +27,7 @@ def start(update: telegram.Update, context: telegram.ext.CallbackContext):
 
 
 def login(update: telegram.Update, context: telegram.ext.CallbackContext):
-    user = utils.UserCache(f'{update.effective_chat.id}')
-    print(user)
+    user = utils.UserCache(f'{update.effective_user.id}')
     if user.cached_data['logged_in']:
         context.bot.send_message(
             chat_id=user.user_id,
@@ -39,18 +38,17 @@ def login(update: telegram.Update, context: telegram.ext.CallbackContext):
             text=''.join(
                 (BASE_URL,
                  url_for('spotify_bp.login'),
-                 f'?telegram-id={user.user_id}')
+                 f'?user={user.user_id}')
             ))
 
 
 def test(update: telegram.Update, context: telegram.ext.CallbackContext):
-    print(update.effective_user.id)
     context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
 
 
 def update_track_data(update: telegram.Update, context: telegram.ext.CallbackContext):
     spotify_uri, mood = context.args
-    user = update.effective_chat.id
+    user = update.effective_user.id
     payload = {'mood': mood, 'playlist': spotify_uri.split(':').pop(), 'user': user}
     data = requests.request('GET', ''.join([BASE_URL, url_for('spotify_bp.parse_playlist')]), params=payload).json()
     context.bot.send_message(chat_id=user, text=data['text'])

@@ -28,6 +28,36 @@ class Manager:
         user_top_tracks = [track['id'] for track in user_top_tracks['items']]
         return user_top_tracks
 
+    # def inner(self,
+    #           offset: int = 0,
+    #           counter: int = 0,
+    #           limit: int = 100,
+    #           *,
+    #           rest: int = 1,
+    #           playlist_id: str = '',
+    #           track_list: list = list,
+    #           features: list = list):
+    #     while rest > 0:
+    #         playlist = self.spotify.playlist_items(
+    #             playlist_id,
+    #             fields='items.track.id, items.track.name, total',
+    #             market=None,
+    #             offset=offset,
+    #             additional_types=('track',))
+    #         features += self.spotify.audio_features(tracks=[item['track']['id'] for item in playlist['items']])
+    #         track_list += [[item['track']['id'], item['track']['name']] for item in playlist['items']]
+    #         counter += 1
+    #         rest = playlist['total'] - offset
+    #         print(rest, len(features), len(track_list))
+    #         return self.inner(
+    #             counter * limit,
+    #             counter,
+    #             rest=rest,
+    #             playlist_id=playlist_id,
+    #             track_list=track_list,
+    #             features=features)
+    #     return features, track_list
+
     def parse_playlist(self, playlist_id: str):
         """
         :return: tuple(features, track_list)
@@ -35,22 +65,21 @@ class Manager:
         track_list = []
         features = []
 
-        def inner(offset: int = 0, counter: int = 0, limit: int = 100, *, rest: int = 0):
+        def inner(offset: int = 0, counter: int = 0, limit: int = 100, *, rest: int = 1):
             while rest > 0:
-                nonlocal track_list
+                nonlocal track_list, features
                 playlist = self.spotify.playlist_items(
                     playlist_id,
                     fields='items.track.id, items.track.name, total',
                     market=None,
                     offset=offset,
                     additional_types=('track',))
-                features.append(self.spotify.audio_features(tracks=[item['track']['id'] for item in playlist['items']]))
+                features += self.spotify.audio_features(tracks=[item['track']['id'] for item in playlist['items']])
                 track_list += [[item['track']['id'], item['track']['name']] for item in playlist['items']]
                 counter += 1
-                rest = playlist['total'] - limit
+                rest = playlist['total'] - offset
                 return inner(counter * limit, counter, rest=rest)
-            return
-
+        inner()
         return features, track_list
 
     def get_recommendations(self):

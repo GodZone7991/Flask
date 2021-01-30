@@ -62,7 +62,7 @@ def parse_playlist() -> make_response():
     mood = request.args.get('mood')
     user = controller.UserCache(user_id)
     manager = controller.Manager(user)
-    features, track_list = controller.parse_playlist(manager.spotify, playlist_id)
+    features, track_list = manager.parse_playlist(playlist_id)
     # controller.save_tracks(features, track_list, mood)
     # response = {'text': 'The playlist was updated'}
     response = [features, track_list]
