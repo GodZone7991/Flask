@@ -1,7 +1,6 @@
 from flask import make_response, jsonify, request, redirect, url_for, session
 from .spotify import spotify_bp
 from . import controller
-import uuid
 from application.bot.controller import callback as bot_callback
 from application import utils
 
@@ -57,15 +56,19 @@ def parse_playlist() -> make_response():
     After all it saves the added track to the DB.
     :return: make_response(status, code)
     """
+    expected_parameters = 'user', 'playlist', 'mood'
+    missing_parameters = list(filter(None, [(x if not request.args.get(x) else None) for x in expected_parameters]))
     user_id = request.args.get('user')
     playlist_id = request.args.get('playlist')
     mood = request.args.get('mood')
+    if not user_id or not playlist_id or not mood:
+        return make_response('Unable response: necessary parameters were lost: {}'.format(', '.join(missing_parameters)))
     user = controller.UserCache(user_id)
     manager = controller.Manager(user)
     features, track_list = manager.parse_playlist(playlist_id)
-    # controller.save_tracks(features, track_list, mood)
-    # response = {'text': 'The playlist was updated'}
-    response = [features, track_list]
+    controller.save_tracks(features, track_list, mood)
+    response = {'text': 'The playlist was updated'}
+    response = [response['text']] + [features, track_list, [i for i in map(len, (features, track_list))]]
     return make_response(jsonify(response), 200)
 
 
@@ -79,7 +82,7 @@ def get_playlist() -> make_response():
     """
     # TODO: make a returning value of this function more informative and adaptive; make error handlers
     manager = controller.Manager(utils.UserCache(request.args.get('user')))
-    response = manager.spotify.me()
+    response = manager.get_recommendations()
     return make_response(response)
 
 
@@ -103,5 +106,14 @@ def get_user_top_tracks():
 
 @spotify_bp.route('/test', methods=['GET'])
 def test():
-    response = ''
-    return make_response(jsonify(response))
+    user_id = request.args.get('user')
+    genres = request.args.get('genres').split(',')
+    user = controller.UserCache(user_id)
+    manager = controller.Manager(user)
+    # playlist = manager.create_playlist('test')
+    # response = manager.spotify.playlist_add_items(
+    #     playlist_id=playlist,
+    #     items=[track['uri'] for track in manager.get_recommendations(genres=('emo', ))['tracks']])
+    response = manager.spotify.recommendation_genre_seeds()
+    # response = manager.get_recommendations(genres=genres)
+    return make_response(jsonify([response, {'Q': len(response['genres'])}]))
