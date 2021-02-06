@@ -1,1 +1,66 @@
-<mxfile host="app.diagrams.net" modified="2021-02-06T19:25:58.950Z" agent="5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 OPR/73.0.3856.329" version="13.10.7" etag="O1y-s5ap1iqYN77aIem0" type="github"><diagram id="Nh-JhxGL4osMia-d8fhe">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-02-06T20:53:37.525Z" agent="5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 OPR/73.0.3856.329" etag="oI_Kr8o1MFA57OsDgPNG" version="13.10.7" type="github">
+  <diagram id="Nh-JhxGL4osMia-d8fhe" name="Page-1">
+    <mxGraphModel dx="828" dy="1621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-19" value="&lt;h1&gt;&lt;b&gt;Для каждого настроения&lt;/b&gt;&lt;/h1&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="340" y="-10" width="650" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_uRF4wjA6KcDBMOSjL_Y-1" target="_uRF4wjA6KcDBMOSjL_Y-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-1" value="Старт: команда start" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_uRF4wjA6KcDBMOSjL_Y-2" target="_uRF4wjA6KcDBMOSjL_Y-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-2" value="Логин" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_uRF4wjA6KcDBMOSjL_Y-3" target="_uRF4wjA6KcDBMOSjL_Y-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-3" value="Изучение персонального вкуса" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_uRF4wjA6KcDBMOSjL_Y-4" target="_uRF4wjA6KcDBMOSjL_Y-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-4" value="Создание плейлиста" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="_uRF4wjA6KcDBMOSjL_Y-5" target="_uRF4wjA6KcDBMOSjL_Y-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-5" value="Получение обратной связи" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-6" value="Обновление плейлиста" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-8" value="&lt;h1&gt;Действия&lt;/h1&gt;&lt;p&gt;if not started:&lt;/p&gt;&lt;p&gt;Регистрация пользователя на сервере;&lt;/p&gt;&lt;p&gt;Создание пользовательского кэша;&lt;/p&gt;&lt;p&gt;Отправка сообщения&amp;nbsp;&lt;/p&gt;&lt;p&gt;else:&lt;/p&gt;&lt;p&gt;Отправка сообщения, goto login&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="120" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-9" value="&lt;h1&gt;Действия&lt;/h1&gt;&lt;p&gt;if not logged in:&lt;/p&gt;&lt;p&gt;Отправка ссылки для подкл. уч. записи;&lt;/p&gt;&lt;p&gt;Изменение пользовательского статуса после подкл. уч. записи;&lt;/p&gt;&lt;p&gt;Отправка сообщения&lt;/p&gt;&lt;p&gt;else:&lt;/p&gt;&lt;p&gt;Отправка сообщения, goto inspecting music tastes&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="110" width="120" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-10" value="&lt;h1&gt;Действия&lt;/h1&gt;&lt;p&gt;if not inspected:&lt;/p&gt;&lt;p&gt;Парсинг топ-треков, сохранение;&lt;/p&gt;&lt;p&gt;Оценка пользователем треков по настроению: отправка сообщения с треком и inline-кнопок для оценки;&lt;/p&gt;&lt;p&gt;Сохранение треков в сиды для конкретного пользователя;&lt;/p&gt;&lt;p&gt;else:&lt;/p&gt;&lt;p&gt;Отправка сообщения&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="110" width="120" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-11" value="&lt;h1&gt;Действия&lt;/h1&gt;&lt;p&gt;if not created (for mood):&lt;/p&gt;&lt;p&gt;Создание плейлиста и наполнение треками по сиду соответствующего настроения;&lt;/p&gt;&lt;p&gt;else:&lt;/p&gt;&lt;p&gt;goto scoring of playlist&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="520" y="110" width="120" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-12" value="&lt;h1&gt;Действия&lt;/h1&gt;&lt;p&gt;не привязано к событию, происходит через сутки, после создания плейлиста:&lt;/p&gt;&lt;p&gt;Оценка пользователем треков из плейлиста: попадает ли в настроение;&lt;/p&gt;&lt;p&gt;Общая оценка плейлиста;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="680" y="110" width="120" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="_uRF4wjA6KcDBMOSjL_Y-13" value="&lt;h1&gt;Действия&lt;/h1&gt;&lt;p&gt;происходит после получения обратной связи по плейлисту или вызовом команды update_playlist:&lt;/p&gt;&lt;p&gt;Обновление плейлиста по актуальным сидам пользователя&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="840" y="110" width="120" height="210" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
